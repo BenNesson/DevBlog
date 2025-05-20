@@ -1,4 +1,4 @@
-baseURL = 'https://devblog.nesson.horse/'
+baseURL = 'https://dev.nesson.horse/'
 languageCode = 'en-US'
-title = 'Beeeps (and Boops)'
+title = 'Beeps (and Boops)'
 theme = 'ananke'
