@@ -1,0 +1,4 @@
+baseURL = 'https://devblog.nesson.horse/'
+languageCode = 'en-US'
+title = 'Beeeps (and Boops)'
+theme = 'ananke'
