@@ -32,7 +32,7 @@ And that's how I got started with JavaScript.
 
 (And this is how I got started embedding images with Hugo.)
 
-((EDIT: **_WOWSERS BOWSERS_** did embedding javascript-animated SVG images turn out to be way more obnoxious than I was anticipating!))
+((EDIT: **_WOWSERS BOWSERS_** did embedding javascript-animated SVG images turn out to be way more obnoxious than I was anticipating!  I'm glad I did though, because I've been thinking for a while now about doing a series of posts explaining fundamentals of how computers work, for the lay person, and anticipate that being pretty animated-svg-heavy.))
 
 [^1]: It was around the time DC Comics was doing their "Blackest Night" event, where we learned that there were _more_ lantern corps, with different colors and associated with different emotions!  Like the Red Lantern Corps, who were very angry (first thought), or the Orange Lantern Corps, who were… greedy? (wait, is it sins now?) and was maybe just one guy, and of course the emotion associated with the good ol' Green Lantern Corps was "willpower" which isn't even really an emotion anyway…
 
