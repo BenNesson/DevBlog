@@ -38,6 +38,12 @@ And that's how I got started with JavaScript.
 
     At any rate, the whole thing was just kinda dumb, so in protest/to make fun of the whole thing, I invented my own corps, the Brown Lantern Corps, whose associated emotion was "relief" and I learned enough SVG to design a stylistically matching logo (with stink lines and everything)[^2].
 
-    (Sometimes I think about how much of the stuff I ended up working on over the years ultimately, thanks to SVG acting as my gateway to JavaScript, came out of me wanting to make a poop joke to make fun of Dan DiDio.)
+    (Sometimes I think about how much of the stuff I ended up working on over the years[^3] ultimately, thanks to SVG acting as my gateway to JavaScript, came out of me wanting to make a poop joke to make fun of Dan DiDio.)
 
 [^2]: Sadly, lost to time.
+
+[^3]: My next mad science project after the trig animations was actually a set of SVG images with embedded JavaScript that would make ajax calls to the OneBusAway Rest API to pull down data and produce a Gantt chart of which buses I should take in the morning.  Which then gave me enough experience doing really weird shit with JavaScript that I got tapped to do the initial investigation/prototyping for Tableau's Hybrid Dialog system (which allowed reuse of web UI on native/desktop products).
+
+    In other words, Poop Lantern Corps logo goof -> silly trig animations -> mad science bus route thing -> actual big important professional project.
+
+    This kind of thing is why I always have trouble answering "Where do you see yourself in five years?"
