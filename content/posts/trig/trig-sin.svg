@@ -1,0 +1,178 @@
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+ width="100%" height="100%" preserveAspectRatio="xMidYMid meet" viewBox="-150 -350 1150 700" onload="rotate(evt.target.ownerDocument)">
+ <title>SVG animation using ECMAScript</title>
+ <script type="text/ecmascript">
+  function connect(p1, p2, line) {
+     line.setAttribute('x1', p1.getAttribute('cx'));
+     line.setAttribute('y1', p1.getAttribute('cy'));
+     line.setAttribute('x2', p2.getAttribute('cx'));
+     line.setAttribute('y2', p2.getAttribute('cy'));
+  }
+  function setxLabel(doc, xlabel, pos) {
+    var tick = doc.getElementById('qt_' + xlabel + '_tick');
+    var text_d = doc.getElementById('qt_' + xlabel + '_text_d');
+    var text_r = doc.getElementById('qt_' + xlabel + '_text_r');
+    tick.setAttribute('x1', pos + 100);
+    tick.setAttribute('x2', pos + 100);
+    text_d.setAttribute('x', pos + 100);
+    text_r.setAttribute('x', pos + 100);
+  }
+  function reset(pLine) {
+    pLine.setAttribute('points', '100,0');
+  }
+  function resetCos(pLine) {
+    pLine.setAttribute('points', '100,-100');
+  }
+  function addPoint(pLine, point) {
+    var points = pLine.getAttribute('points');
+    pLine.setAttribute('points', points + ' ' +
+      point.getAttribute('cx') + ',' + 
+      point.getAttribute('cy'));
+  }
+  function rotate(doc) {
+   var ray = doc.getElementById('ray');
+   var rayMaskRect = doc.getElementById('rayMaskRect');
+   
+   var hypotEnd = doc.getElementById('hypotEnd');
+   var sinPoint = doc.getElementById('sinPoint');
+   var sinJoiner = doc.getElementById('sinJoiner');
+   var sinLine = doc.getElementById('sinLine');
+   var sinLabel = doc.getElementById('sinLabel');
+   
+   var turnTime = 8000; // cycle time in milliseconds
+   var turnsPerCycle = 4;
+   var cycleLength = turnTime * turnsPerCycle;
+   var xStep = 900 / cycleLength;
+   var tickStep = (900 / turnsPerCycle) / 4;
+   
+   for (i = 1; 16 > i; i++)
+   {
+     setxLabel(doc, i, i * tickStep);
+   }
+   
+   var start = new Date();
+   var last = -1;
+   
+   setInterval(function () {
+     var now = new Date();
+     var t = (now.getTime() - start.getTime()) % cycleLength;
+     
+     var degrees = (360 / turnTime) * -t;
+     var radians = degrees * Math.PI/180;
+     
+     rayMaskRect.setAttribute('transform', 'rotate(' + degrees + ')');
+     ray.setAttribute('transform', 'rotate(' + degrees + ')');
+     
+     var ySin = Math.sin(radians) * 100;
+     var xCos = Math.cos(radians) * 100;
+     
+     hypotEnd.setAttribute('cy', ySin);
+     hypotEnd.setAttribute('cx', xCos);
+     
+     sinPoint.setAttribute('cx', 100 + t * xStep);
+     sinPoint.setAttribute('cy', ySin);
+     sinLabel.setAttribute('x', 110 + t * xStep);
+     sinLabel.setAttribute('y', ySin);
+     
+     connect(sinPoint, hypotEnd, sinJoiner);
+     
+     if (last > t) {
+       reset(sinLine);
+     } else {
+       addPoint(sinLine, sinPoint);
+     }
+     last = t;
+    }, 50);
+  }
+ </script>
+ <defs>
+   <clipPath id="borderMask">
+     <rect x="-150" y="-350" width="1150" height="700" />
+   </clipPath>
+   <clipPath id="rayMask">
+     <rect id="rayMaskRect" x="-150" y="-350" width="1150" height="700" />
+   </clipPath>
+ </defs>
+ <rect id="border" x="-150" y="-350" width="1150" height="700" fill="none" stroke="black" />
+ <circle id="unit" cx="0" cy="0" r="100" stroke="black" fill="none" clip-path="url(#borderMask)" />
+ <line id="xAxis" x1="-1000" y1="0" x2="1000" y2="0" stroke="black" clip-path="url(#borderMask)" />
+ <line id="tangent" x1="100" y1="-400" x2="100" y2="400" stroke="black" clip-path="url(#borderMask)" />
+ <line x1="95" x2="105" y1="50" y2="50" stroke="black" />
+ <line x1="95" x2="105" y1="100" y2="100" stroke="black" />
+ <line x1="95" x2="105" y1="150" y2="150" stroke="black" />
+ <line x1="95" x2="105" y1="200" y2="200" stroke="black" />
+ <line x1="95" x2="105" y1="300" y2="300" stroke="black" />
+ <line x1="95" x2="105" y1="-50" y2="-50" stroke="black" />
+ <line x1="95" x2="105" y1="-100" y2="-100" stroke="black" />
+ <line x1="95" x2="105" y1="-150" y2="-150" stroke="black" />
+ <line x1="95" x2="105" y1="-200" y2="-200" stroke="black" />
+ <line x1="95" x2="105" y1="-300" y2="-300" stroke="black" />
+ <text x="107" y="54" font-family="sans-serif" font-size="10px" fill="black">-0.5</text>
+ <text x="107" y="104" font-family="sans-serif" font-size="10px" fill="black">-1.0</text>
+ <text x="107" y="154" font-family="sans-serif" font-size="10px" fill="black">-1.5</text>
+ <text x="107" y="204" font-family="sans-serif" font-size="10px" fill="black">-2.0</text>
+ <text x="107" y="304" font-family="sans-serif" font-size="10px" fill="black">-3.0</text>
+ <text x="107" y="-46" font-family="sans-serif" font-size="10px" fill="black">0.5</text>
+ <text x="107" y="-96" font-family="sans-serif" font-size="10px" fill="black">1.0</text>
+ <text x="107" y="-146" font-family="sans-serif" font-size="10px" fill="black">1.5</text>
+ <text x="107" y="-196" font-family="sans-serif" font-size="10px" fill="black">2.0</text>
+ <text x="107" y="-296" font-family="sans-serif" font-size="10px" fill="black">3.0</text>
+ 
+ <text text-anchor="middle" id="qt_1_text_d" y="14" x="0" font-family="sans-serif" font-size="10px" fill="black">90°</text>
+ <text text-anchor="middle" id="qt_2_text_d" y="14" x="0" font-family="sans-serif" font-size="10px" fill="black">180°</text>
+ <text text-anchor="middle" id="qt_3_text_d" y="14" x="0" font-family="sans-serif" font-size="10px" fill="black">270°</text>
+ <text text-anchor="middle" id="qt_4_text_d" y="14" x="0" font-family="sans-serif" font-size="10px" fill="black">360°</text>
+ <text text-anchor="middle" id="qt_5_text_d" y="14" x="0" font-family="sans-serif" font-size="10px" fill="black">450°</text>
+ <text text-anchor="middle" id="qt_6_text_d" y="14" x="0" font-family="sans-serif" font-size="10px" fill="black">540°</text>
+ <text text-anchor="middle" id="qt_7_text_d" y="14" x="0" font-family="sans-serif" font-size="10px" fill="black">630°</text>
+ <text text-anchor="middle" id="qt_8_text_d" y="14" x="0" font-family="sans-serif" font-size="10px" fill="black">720°</text>
+ <text text-anchor="middle" id="qt_9_text_d" y="14" x="0" font-family="sans-serif" font-size="10px" fill="black">810°</text>
+ <text text-anchor="middle" id="qt_10_text_d" y="14" x="0" font-family="sans-serif" font-size="10px" fill="black">900°</text>
+ <text text-anchor="middle" id="qt_11_text_d" y="14" x="0" font-family="sans-serif" font-size="10px" fill="black">990°</text>
+ <text text-anchor="middle" id="qt_12_text_d" y="14" x="0" font-family="sans-serif" font-size="10px" fill="black">1080°</text>
+ <text text-anchor="middle" id="qt_13_text_d" y="14" x="0" font-family="sans-serif" font-size="10px" fill="black">1170°</text>
+ <text text-anchor="middle" id="qt_14_text_d" y="14" x="0" font-family="sans-serif" font-size="10px" fill="black">1260°</text>
+ <text text-anchor="middle" id="qt_15_text_d" y="14" x="0" font-family="sans-serif" font-size="10px" fill="black">1350°</text>
+ 
+ <text text-anchor="middle" id="qt_1_text_r" y="26" x="0" font-family="sans-serif" font-size="10px" fill="black">(π/2)</text>
+ <text text-anchor="middle" id="qt_2_text_r" y="26" x="0" font-family="sans-serif" font-size="10px" fill="black">(π)</text>
+ <text text-anchor="middle" id="qt_3_text_r" y="26" x="0" font-family="sans-serif" font-size="10px" fill="black">(3π/2)</text>
+ <text text-anchor="middle" id="qt_4_text_r" y="26" x="0" font-family="sans-serif" font-size="10px" fill="black">(2π)</text>
+ <text text-anchor="middle" id="qt_5_text_r" y="26" x="0" font-family="sans-serif" font-size="10px" fill="black">(5π/2)</text>
+ <text text-anchor="middle" id="qt_6_text_r" y="26" x="0" font-family="sans-serif" font-size="10px" fill="black">(3π)</text>
+ <text text-anchor="middle" id="qt_7_text_r" y="26" x="0" font-family="sans-serif" font-size="10px" fill="black">(7π/2)</text>
+ <text text-anchor="middle" id="qt_8_text_r" y="26" x="0" font-family="sans-serif" font-size="10px" fill="black">(4π)</text>
+ <text text-anchor="middle" id="qt_9_text_r" y="26" x="0" font-family="sans-serif" font-size="10px" fill="black">(9π/2)</text>
+ <text text-anchor="middle" id="qt_10_text_r" y="26" x="0" font-family="sans-serif" font-size="10px" fill="black">(5π)</text>
+ <text text-anchor="middle" id="qt_11_text_r" y="26" x="0" font-family="sans-serif" font-size="10px" fill="black">(11π/2)</text>
+ <text text-anchor="middle" id="qt_12_text_r" y="26" x="0" font-family="sans-serif" font-size="10px" fill="black">(6π)</text>
+ <text text-anchor="middle" id="qt_13_text_r" y="26" x="0" font-family="sans-serif" font-size="10px" fill="black">(13π/2)</text>
+ <text text-anchor="middle" id="qt_14_text_r" y="26" x="0" font-family="sans-serif" font-size="10px" fill="black">(7π)</text>
+ <text text-anchor="middle" id="qt_15_text_r" y="26" x="0" font-family="sans-serif" font-size="10px" fill="black">(15π/2)</text>
+ 
+ 
+ <line id="qt_1_tick" y1="-5" y2="5" x1="0" x2="0" stroke="black" />
+ <line id="qt_2_tick" y1="-5" y2="5" x1="0" x2="0" stroke="black" />
+ <line id="qt_3_tick" y1="-5" y2="5" x1="0" x2="0" stroke="black" />
+ <line id="qt_4_tick" y1="-5" y2="5" x1="0" x2="0" stroke="black" />
+ <line id="qt_5_tick" y1="-5" y2="5" x1="0" x2="0" stroke="black" />
+ <line id="qt_6_tick" y1="-5" y2="5" x1="0" x2="0" stroke="black" />
+ <line id="qt_7_tick" y1="-5" y2="5" x1="0" x2="0" stroke="black" />
+ <line id="qt_8_tick" y1="-5" y2="5" x1="0" x2="0" stroke="black" />
+ <line id="qt_9_tick" y1="-5" y2="5" x1="0" x2="0" stroke="black" />
+ <line id="qt_10_tick" y1="-5" y2="5" x1="0" x2="0" stroke="black" />
+ <line id="qt_11_tick" y1="-5" y2="5" x1="0" x2="0" stroke="black" />
+ <line id="qt_12_tick" y1="-5" y2="5" x1="0" x2="0" stroke="black" />
+ <line id="qt_13_tick" y1="-5" y2="5" x1="0" x2="0" stroke="black" />
+ <line id="qt_14_tick" y1="-5" y2="5" x1="0" x2="0" stroke="black" />
+ <line id="qt_15_tick" y1="-5" y2="5" x1="0" x2="0" stroke="black" />
+ 
+ <line id="ray" x1="-1200" y1="0" x2="1200" y2="0" stroke="grey" clip-path="url(#rayMask)" />
+ <circle id="sinPoint" cx="100" cy="0" r="5" stroke="green" fill="green" clip-path="url(#borderMask)" />
+ <line id="sinJoiner" x1="100" y1="0" x2="100" y2="0" stroke="green" clip-path="url(#borderMask)" />
+ <polyline id="sinLine" fill="none" stroke="green" points="100,0" clip-path="url(#borderMask)" />
+ <circle id="hypotEnd" cx="100" cy="0" r="5" stroke="black" fill="black" clip-path="url(#borderMask)" />
+ 
+ <text id="sinLabel" x="110" y="0" font-family="sans-serif" font-size="15px" fill="green" clip-path="url(#borderMask)" >sin(x)</text>
+</svg>
