@@ -4,7 +4,7 @@ title = 'Trig'
 +++
 Once upon a time, a friend of mine shared a gif on Facebook that looked a little something like this:
 {{< svg_embed src=./trig-sin.svg >}}
-Geometric animation: Cartesian plane from x = \[0,8π\] and y = \[-3.5,3.5\], with a unit circle on the left, centered at (-1, 0).  A line passes through the center of the circle and rotates counter clockwise.  There is a dot where the line initially crosses the circle on the right side, and a green line segment stretches horizontally from that dot to a green dot at (x, sin(x)), moving right as the animation progresses.  As this green dot moves, it traces out a green sine wave path behind it.  Overall, the image visually demonstrates that a sine wave is just the vertical component of the point rotating around the circle.
+Geometric animation: Cartesian plane from x = [0,8π] and y = [-3.5,3.5], with a unit circle on the left, centered at (-1, 0).  A line passes through the center of the circle and rotates counter clockwise.  There is a dot where the line initially crosses the circle on the right side, and a green line segment stretches horizontally from that dot to a green dot at (x, sin(x)), moving right as the animation progresses.  As this green dot moves, it traces out a green sine wave path behind it.  Overall, the image visually demonstrates that a sine wave is just the vertical component of the point rotating around the circle.
 {{< /svg_embed >}}
 
 Her comment was something along the lines of "Someone should make something like this for the other ones."
