@@ -9,7 +9,7 @@ Geometric animation: Cartesian plane from x = \[0,8π\] and y = \[-3.5,3.5\], wi
 
 Her comment was something along the lines of "Someone should make something like this for the other ones."
 
-I had previously messed around with SVG images for another project, and figured it'd be a good technology to use for this kind of geometric image creation, but I didn't have any experience with animating them.  So I started looking around and it turns out you can just embed javascript in SVG and manipulate the DOM directly.
+I had previously messed around with SVG images for another project[^1], and figured it'd be a good technology to use for this kind of geometric image creation, but I didn't have any experience with animating them.  So I started looking around and it turns out you can just embed javascript in SVG and manipulate the DOM directly.
 
 So I started banging things together and made the image above (for sake of completeness) along with these two:
 
@@ -33,3 +33,11 @@ And that's how I got started with JavaScript.
 (And this is how I got started embedding images with Hugo.)
 
 ((EDIT: **_WOWSERS BOWSERS_** did embedding javascript-animated SVG images turn out to be way more obnoxious than I was anticipating!))
+
+[^1]: It was around the time DC Comics was doing their "Blackest Night" event, where we learned that there were _more_ lantern corps, with different colors and associated with different emotions!  Like the Red Lantern Corps, who were very angry (first thought), or the Orange Lantern Corps, who were… greedy? (wait, is it sins now?) and was maybe just one guy, and of course the emotion associated with the good ol' Green Lantern Corps was "willpower" which isn't even really an emotion anyway…
+
+    At any rate, the whole thing was just kinda dumb, so in protest/to make fun of the whole thing, I invented my own corps, the Brown Lantern Corps, whose associated emotion was "relief" and I learned enough SVG to design a stylistically matching logo (with stink lines and everything)[^2].
+
+    (Sometimes I think about how much of the stuff I ended up working on over the years ultimately, thanks to SVG acting as my gateway to JavaScript, came out of me wanting to make a poop joke to make fun of Dan DiDio.)
+
+[^2]: Sadly, lost to time.
