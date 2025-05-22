@@ -2,5 +2,7 @@ baseURL = 'https://dev.nesson.horse/'
 languageCode = 'en-US'
 title = 'Beeps (and Boops)'
 theme = 'ananke'
+author = "Ben Nesson"
+copyright = "Ben Nesson"
 [taxonomies]
   tag = 'tags'

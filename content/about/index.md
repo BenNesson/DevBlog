@@ -44,6 +44,7 @@ It worked pretty well, and I got to see _a lot_ of weird stuff.  That's one of t
 - Done some actually useful stuff with:
   - SVG
   - Graphviz
+  - LaTeX (enough to do my résumé, anyway)
 - Substantial amount of work with:
   - C++
     - Hate it as only someone who's had to dive in _real_ deep possibly can
