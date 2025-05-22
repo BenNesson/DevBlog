@@ -5,7 +5,7 @@ I'm Ben Nesson, this is my dev blog.  All opinions are my own.  No warrantee exp
 
 # Career
 ## Misc
-I went to SDSU[^1] and after a couple summers delivering pizzas[^2] running a weedeater in a cemetery[^3], I ended up spending three years or so working in a giant video screen factory (regular-sized factory for giant video screens).[^4]
+I went to SDSU[^1] and after a couple summers delivering pizzas[^2] and running a weedeater in a cemetery[^3], I ended up spending three years or so working in a giant video screen factory (regular-sized factory for giant video screens).[^4]
 
 Once I graduated, I moved to Seattle and got a programmer gig at a small company that got bought out by a competitor like twenty minutes after I got there.  Seriously, the sale was a done deal when I was interviewing, but apparently they had to play dumb to not tip their hand to… someone, Iunno.
 
