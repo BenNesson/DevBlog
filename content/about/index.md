@@ -1,6 +1,5 @@
 +++
-date = '2025-05-21T17:31:12-07:00'
-title = 'About'
+title = 'About the Author'
 +++
 I'm Ben Nesson, this is my dev blog.  All opinions are my own.  No warrantee expressed or implied, etc.
 
