@@ -2,3 +2,5 @@ baseURL = 'https://dev.nesson.horse/'
 languageCode = 'en-US'
 title = 'Beeps (and Boops)'
 theme = 'ananke'
+[taxonomies]
+  tag = 'tags'

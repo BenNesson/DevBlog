@@ -1,6 +1,7 @@
 +++
 date = '2025-05-20T16:36:57-07:00'
 title = 'Trig'
+tags = [ 'SVG', 'JavaScript' ]
 +++
 Once upon a time, a friend of mine shared a gif on Facebook that looked a little something like this:
 {{< svg_embed src=./trig-sin.svg >}}

@@ -1,6 +1,7 @@
 +++
 date = '2025-05-21T15:19:17-07:00'
 title = 'Animated SVG in Hugo'
+tags = [ 'SVG', 'JavaScript' ]
 +++
 I mentioned as much in an edit at the end of [the previous post](/posts/trig "Trig"), but getting JavaScript-animated svgs to show up properly via Hugo was a pain in the ass.
 
@@ -24,7 +25,7 @@ All three animations composited together into one image.
 {{</* /svg_embed */>}}
 ```
 
-It was important to me to make sure I could get alt text in there, because accessibility.  Not sure the `alt` attribute is the best way to do it, but if not, well… hopefully someone will let me know.  And I went with `.Inner` for that because the alt text for some of them was pretty long, and didn't want to think about how I'd pass big, arbitrarily complex chunks of text via a shortocde argument/parameter/whatever.  I'm sure anything too complicated in that `.Inner` block will cause me headaches, but 🤷‍♀️ I wanted to get something in plce already.
+It was important to me to make sure I could get alt text in there, because accessibility.  Not sure the `alt` attribute is the best way to do it, but if not, well… hopefully someone will let me know.  And I went with `.Inner` for that because the alt text for some of them was pretty long, and didn't want to think about how I'd pass big, arbitrarily complex chunks of text via a shortocde argument/parameter/whatever.  I'm sure anything too complicated in that `.Inner` block will cause me headaches, but 🤷‍♀️ I wanted to get something in place already.
 
 Of course just now, to escape the shortcodes in that codeblock, I actually had to escape them with `/*` and `*/`, like so:
 
