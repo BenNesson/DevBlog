@@ -55,6 +55,7 @@ It worked pretty well, and I got to see _a lot_ of weird stuff.  That's one of t
 - I got cats
 - Too many Nerf guns
 - Old technology rules, I still use my Zune and just put LineageOS on an old Fire tablet I got for 15 bucks at a rummage sale
+- I don't use generative AI.  If I'm putting my name on it, I wrote it.  To the best of my knowledge[^14] Everything on this page is, and will always be, 100% human-written.
 
 [^1]: The first SDSU, in South Dakota; not those jokers in California who think San Diego's a State.  Go Jackrabbits.
 [^2]: Domino's
@@ -69,3 +70,4 @@ It worked pretty well, and I got to see _a lot_ of weird stuff.  That's one of t
 [^11]: Mostly causing trouble and weird shenanigans, but _a lot_ of shenanigans
 [^12]: The only automation technology I could _count on_ to be available regardless of platform in my time at Microsoft.  I have done orders of magnitude more batch scripting than anyone should ever have had to.  I have scripts that write other scripts
 [^13]: I just think it's neat, you know?
+[^14]: I.e., modulo any of the innumerable buttholes who are determined to shove LLM garbage into every piece of software in the world managing to sneak some LLM garbage into a tool I use without me realizing it
