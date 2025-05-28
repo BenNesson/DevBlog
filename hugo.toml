@@ -1,8 +1,23 @@
 baseURL = 'https://dev.nesson.horse/'
 languageCode = 'en-US'
 title = 'Beeps (and Boops)'
-theme = 'ananke'
+theme = 'bootstrap'
 author = "Ben Nesson"
 copyright = "Ben Nesson"
 [taxonomies]
   tag = 'tags'
+[params]
+  Description = 'Hooray, another dev blog!'
+
+[[menu.main]]
+  name ="Home"
+  url = "/"
+  weight = 1
+[[menu.main]]
+  name = "Posts"
+  url = "/posts/"
+  weight = 2
+[[menu.main]]
+  name = "About"
+  url = "/about/"
+  weight = 3
