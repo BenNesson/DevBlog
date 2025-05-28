@@ -2,6 +2,7 @@
 date = '2025-05-20T16:07:37-07:00'
 title = 'Hello World 2'
 tags = [ 'Bar' ]
+summary = 'Testing 1-2…'
 +++
 Figuring out how this stuff works
 

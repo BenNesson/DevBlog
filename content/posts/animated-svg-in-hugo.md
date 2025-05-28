@@ -2,6 +2,7 @@
 date = '2025-05-21T15:19:17-07:00'
 title = 'Animated SVG in Hugo'
 tags = [ 'SVG', 'JavaScript' ]
+summary = '…in case any other weirdos need to know…'
 +++
 I mentioned as much in an edit at the end of [the previous post](/posts/trig "Trig"), but getting JavaScript-animated svgs to show up properly via Hugo was a pain in the ass.
 
