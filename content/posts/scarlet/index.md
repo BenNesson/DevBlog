@@ -59,7 +59,7 @@ Finally, off the right end of the child process line, there's a dashed line (lab
 So, why was the child process crashing?
 
 ### The Easy(ish) Part
-I started digging into the child process, initially by way of procmon logs that had already been collected.  We actually had a repro on this one (which was not typically the case for my investigations), but it required setting up Tableau server, which enough of an ordeal that I wanted to avoid it as long as possible.  And procmon logs contain a lot of juicy stack information anyway, so it was worth looking through what we already had to find a jumping off point.
+I started digging into the child process, initially by way of procmon logs that had already been collected.  We actually had a repro on this one (which was not typically the case for my investigations), but it required setting up Tableau server, which was enough of an ordeal that I wanted to avoid it as long as possible.  And procmon logs contain a lot of juicy stack information anyway, so it was worth looking through what we already had to find a jumping off point.
 
 I tracked down the last event in the child process before all the ThreadExit events started firing as the process went down and it suggested, oddly enough, an issue trying to find _fonts_.  The last couple stack frames before everything went all system-exception-handling were `blink::FontFallbackIterator::Next` calling into `blink::FontCache::CrashWithFontInfo`.
 
