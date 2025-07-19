@@ -1,6 +1,5 @@
 +++
 date = '2025-07-18T15:06:05-07:00'
-draft = true
 title = "A Study in Scarlet (but it's a Bug)"
 tags = [ "Bug Detective", "Dr. Nesson", "Windows Guts", "Security", "QtWebEngine" ]
 summary = "Season 1, Episode 1…"
