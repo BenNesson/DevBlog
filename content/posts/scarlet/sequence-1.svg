@@ -1,0 +1,106 @@
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+     xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="100%" height="100%"
+     preserveAspectRatio="xMidYMid meet"
+     viewBox="0 0 800 400">
+  <rect x="1" y="1" width="798" height="398"
+        stroke="black" stroke-width="2" fill="white" />
+
+  <g id="lines" stroke="black" fill="none">
+    <!-- extract processor -->
+    <path stroke-dasharray="3 3" d="M 30 100 l 60 0 m 630 000 l 50 0" />
+    <path stroke-dasharray="7 3" d="M 90 100 l 60 0 m 520 000 l 50 0" />
+    <path stroke-dasharray="23 3" d="M 150 100 l 520 0 m 100 0 l -10 -5 m 10 5 l -10 5" />
+
+    <!-- protosrv -->
+    <path stroke-dasharray="3 3" d="M 30 200 l 60 0 m 630 000 l 50 0" />
+    <path stroke-dasharray="7 3" d="M 90 200 l 60 0 m 530 000 l 40 0" />
+    <path d="M 150 200 l 530 0 m 90 0 l -10 -5 m 10 5 l -10 5" />
+
+    <!-- webengine child process -->
+    <path d="M 230 300 l 400 0 m -10 -10 l 20 20 m -20 0 l 20 -20" />
+
+    <!-- request protocol -->
+    <path stroke-dasharray="1 2" d="M 150 100 l 20 100" />
+    <path id="request_protocol_text" stroke="none" d="M 140 100 l 20 100" />
+
+    <!-- WebEngine launch code -->
+    <path stroke-dasharray="1 1"
+          d="M 180 200
+             a 40 40 0 0 0 80 0
+             m -40 40
+             l 10 60" />
+    <path id="webengine_launch_text"
+          stroke="none"
+          d="M 183 200
+             a 37 37 0 0 0 74 0" />
+    <path id="child_launch_text"
+          stroke="none"
+          d="M 223 240 l 10 60" />
+    
+    <!-- crash -->
+    <path stroke-dasharray="1 1"
+          d="M 630 300 l 15 -100" />
+    <path id="crash_detect_text"
+          stroke="none"
+          d="M 625 300 l 15 -100" />
+
+    <!-- report failure -->
+    <path stroke-dasharray="1 2" d="M 670 200 l 15 -100" />
+    <path id="protocol_failure_text" stroke="none" d="M 665 200 l 15 -100" />
+
+    <!-- IPC -->
+    <path stroke-dasharray="1 3" d="M 300 350 l 0 -175 m 225 0 l 0 175 m 0 -10 l -225 0" />
+    <path stroke-dasharray="1 1" d="M 325 300 l 15 -100 m 150 0 l 15 100" />
+    <path id="font_request_text" stroke="none" d="M 320 300 l 15 -100" />
+    <path id="font_failure_text" stroke="none" d="M 495 200 l 15 100" />
+  </g>
+
+  <g id="labels">
+    <text x="45" y="90">[Whatever does the extract 🤷‍♀️]</text>
+    <text x="45" y="190">protosrv</text>
+    <text x="30" y="220">(already running)</text>
+    <text x="180" y="320">[child process]</text>
+    <text font-size="70%">
+      <textPath href="#request_protocol_text" startOffset="5%">
+        request protocol
+      </textPath>
+    </text>
+    <text font-size="75%" fill="grey">
+      <textPath href="#webengine_launch_text"
+                startOffset="8%">
+        WebEngine code
+      </textPath>
+    </text>
+    <text font-size="50%" fill="grey">
+      <textPath href="#child_launch_text" startOffset="8%">
+        launch child
+      </textPath>
+    </text>
+    <text font-size="75%" fill="grey">
+      <textPath href="#font_request_text" startOffset="15%">
+        font.ttf plz
+      </textPath>
+    </text>
+    <text x="375" y="195">&lt; ? ? ? ? ? &gt;</text>
+    <text font-size="75%" fill="grey">
+      <textPath href="#font_failure_text" startOffset="10%">
+        whoops, error
+      </textPath>
+    </text>
+    <text x="350" y="335" font-size="85%" fill="grey">repeat for all fonts</text>
+    <text x="565" y="320">CRASH</text>
+    <text font-size="70%" fill="grey">
+      <textPath href="#crash_detect_text" startOffset="15%">
+        crash detected
+      </textPath>
+    </text>
+    <text font-size="70%">
+      <textPath href="#protocol_failure_text" startOffset="15%">
+        report failure
+      </textPath>
+    </text>
+  </g>
+</svg>
