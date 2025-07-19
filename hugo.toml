@@ -8,6 +8,7 @@ copyright = "Ben Nesson"
   tag = 'tags'
 [params]
   Description = 'Hooray, another dev blog!'
+  custom_css = [ 'misc.css' ]
 
 [[menu.main]]
   name ="Home"
