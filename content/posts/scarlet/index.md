@@ -1,5 +1,5 @@
 +++
-date = '2025-06-18T15:06:05-07:00'
+date = '2025-07-18T15:06:05-07:00'
 draft = true
 title = "A Study in Scarlet (but it's a Bug)"
 tags = [ "Bug Detective", "Dr. Nesson", "Windows Guts", "Security", "QtWebEngine" ]
@@ -64,12 +64,12 @@ I started digging into the child process, initially by way of procmon logs that 
 
 I tracked down the last event in the child process before all the ThreadExit events started firing as the process went down and it suggested, oddly enough, an issue trying to find _fonts_.  The last couple stack frames before everything went all system-exception-handling were `blink::FontFallbackIterator::Next` calling into `blink::FontCache::CrashWithFontInfo`.
 
-These frames tell me a few things:
-- I know `blink` is part of chromium's layout code, so this is some kind of layout/rendering issue.
-- `FontFallbackIterator::Next` is suggestive, just by its name:
-  - "Fallback" suggests something we expect to work isn't working.
-  - "Iterator" says we've stepped through a number of fallbacks, which suggests a systemic issue (rather than one missing font).
-- `CrashWithFontInfo` indicates this is something of a controlled demolition.  This isn't an invalid memory access or something, this is the system deciding that some state is screwed up beyond its ability to compensate or diagnose, so the only thing it can do is make some notes about that state and trigger a crash.
+These frames told me a few things:
+- I knew `blink` was part of chromium's layout code, so this was some kind of layout/rendering issue.
+- `FontFallbackIterator::Next` was suggestive, just by its name:
+  - "Fallback" suggested something we expected to work wasn't working.
+  - "Iterator" implied we'd stepped through a number of fallbacks, which suggested a systemic issue (rather than one missing font).
+- `CrashWithFontInfo` indicated that this was something of a controlled demolition.  This wasn't an invalid memory access or something, this was the system deciding that some state was screwed up beyond its ability to compensate or diagnose, so the only thing it could do was make some notes about that state and trigger a crash.
 
 In other words, it looked like during layout, the process was trying to access fonts, failing, and then deciding the only option remaining was to crash.
 
@@ -140,11 +140,11 @@ I started digging deeper into `NtCreateFileInTarget`.  It started with a path to
 
 To make this determination, `SameObject` needed to know whether `C:` and `\Device\HarddiskVolume3` corresponded to the same thing, so it called a Windows API function called `QueryDosDeviceW` to get the device/volume name for `C:`.
 
-More specifically, `SameObject` would call `QueryDosDeviceW`, passing it the name of the device (`C:`) and a string to be populated with that device name, and it expected the length of that string to be returned from the function.
+More precisely, `SameObject` would call `QueryDosDeviceW`, passing it the name of the device (`C:`) and a string to be populated with that device name, and it expected the length of that string to be returned from the function.
 
-But `QueryDosDeviceW` wasn't returning the length of the string, it was returning 0, which indicates an error.  `SameObject` didn't bother checking that error, but I get aggressive with a debugger, so I did: `ERROR_ACCESS_DENIED`.
+But `QueryDosDeviceW` wasn't returning the length of the string, it was returning 0, which indicates an error.  `SameObject` didn't bother checking that error, but I like getting aggressive with debuggers, so I did: `ERROR_ACCESS_DENIED`.
 
-And I dug around in all the docs for `QueryDosDeviceW` I could find, and as far as I could determine, `ERROR_ACCESS_DENIED` meant exactly what it said on the tin.  There wasn't some weird edge case that spat out an `ERROR_ACCESS_DENIED` when it wasn't actually an access issue, that was the error for insufficient access.
+I dug around in all the docs for `QueryDosDeviceW` I could find, and as far as I could determine, `ERROR_ACCESS_DENIED` meant exactly what it said on the tin.  There wasn't some weird edge case that spat out an `ERROR_ACCESS_DENIED` when it wasn't actually an access issue, that was in fact the error for insufficient access.
 
 So, somehow the parent process had permission to open the file, but _not_ to query the device name for the root drive.  _Weird._  But like I said, this was a _massive_ chunk of the puzzle solved.  This weird access/permissions issue meant the parent couldn't open any files for the child, so the child couldn't access fonts, so it threw that breakpoint exception, the child process crashed, and the protocol server registered the failure and aborted the extract.  So what was causing the access issue?
 
@@ -181,29 +181,33 @@ The Parent Thing created and configured a security token, and used it to launch 
     
     The zookeeper ran elevated and launched the protocol server with a restricted token.  That mechanism was somehow causing the permissions issue that was causing `QueryDosDeviceW` to fail.  That's the breakdown I needed to understand.
 
-Then I tracked down the code we used to launch restricted processes, looked it over (understanding very little of it), and duplicated enough of it into the Parent Thing that I could successfully replicate the same failure in the Child Thing that was causing our problems in the protocol server.
+Then I tracked down the code we used to launch restricted processes, looked it over (understanding… _some_ of it), and duplicated enough of it into the Parent Thing that I could successfully replicate the same failure in the Child Thing that was causing our problems in the protocol server.
 
 The reason I made these Things is that they were a _hell_ of a lot easier to debug and rev on than a whole entire server installation.  I didn't have to change the run-as user's permissions and restart the whole server (a process which took tens of minutes), I could just run the Parent Thing from an elevated/non-elevated command prompt.
 
 That ease of iteration let me determine that out of the three things we did to make a Restricted Security Token:
-  - Deny a couple user groups, including the Administrators group
-  - Disable all privileges except one
-  - Some kind of DACL thing I never understood (and never needed to)
+  1. Deny a couple user groups, including the Administrators group
+  2. Disable all privileges except one
+  3. Some kind of DACL thing I never understood (and never needed to)
 
-The only one that mattered was denying the Administrators group.  If the Parent Thing didn't disable privileges, the problem still happened.  If it _didn't_ do the DACL thing, the Child Thing wouldn't work at all.  But denying the Administrators group meant the problem occurred, and _not_ denying it meant the problem _didn't_.
+The only one that mattered was denying the Administrators group.  If the Parent Thing didn't disable those privileges (thing 2), the problem still happened—so that didn't matter.  If it didn't do the DACL thing (thing 3), the Child Thing wouldn't work at all—so that _had_ to happen no matter what.
 
-And in either case, running the Parent Thing from a non-admin command prompt meant the bug behavior didn't repro—just like how the original bug wouldn't repro if the Run-As user was not an administrator.  I had a minimal repro demonstrating the same (or at least isomorphic) behavior.
+But denying the Administrators group meant the problem occurred, and _not_ denying it meant the problem _didn't_—so that was the determining factor.  (And in either case, running the Parent Thing from a non-admin command prompt meant the bug behavior didn't repro—just like how the original bug wouldn't repro if the Run-As user was not an administrator.)
+
+I had a minimal repro demonstrating the same (or at least isomorphic) behavior.
 
 ### The Bottom of the Rabbit Hole
 Okay, then what was happening when the parent process was elevated, but the child process wasn't?  All I was getting from `QueryDosDeviceW` was `ERROR_ACCESS_DENIED`, which was not especially informative.  Searching online did little to illuminate anything, because we were pretty deep into territory that most folks steer clear of, and pretty far off the rails as far as what Microsoft has actually documented.  About all I could nail down was that, as mentioned above, `ERROR_ACCESS_DENIED` meant… well, that access was denied.
 
-So, deeper still.  Via some aggressive debugging and disassembling, I started poking around _inside_ `QueryDosDeviceW`.  What I found was that one of the first things it does is call `NtOpenDirectoryObject` to open `\??`, which is a path prefix that represents kind of the root of all device objects on the system.  But importantly, the Windows Object Manager translates `\??` into something different on a per-user, per-session, per-lots-of-stuff basis—including _whether the process token is elevated_.
+So, deeper still.  Via some aggressive debugging and disassembling, I started poking around _inside_ `QueryDosDeviceW`.  What I found was that one of the first things it does is call `NtOpenDirectoryObject` to open `\??`, which is a path prefix that represents kind of the root of all device objects on the system.
+
+But importantly, the Windows Object Manager translates `\??` into something different on a per-user, per-session, per-lots-of-stuff basis—including _whether the process token is elevated_.
 
 What this means is that a program that calls `NtOpenDirectoryObject` on `\??` will be pointed at a _different object_ when run elevated than when run non-elevated.  And importantly, if an elevated parent creates a security token that denies the Administrators group and uses it to run a child, and that child calls `NtOpenDirectoryObject` on `\??`, it gets _the same object_ as the elevated parent gets with its unrestricted token.
 
 In other words—and this is the very beating heart of the bug—the Windows Object Manager _still sees the Restricted token as an elevated token_.
 
-This is the crux of things because, critically, looking up these paths manually in WinObj and examining their Access Control Lists?  The ACL for the path that the _non-elevated process_ gets back from `NtOpenDirectoryObject` includes the user account (meaning the user account has explicit access to that path).  But the ACL for the path the _elevated_ process gets back _doesn't_ include the user account.  That ACL only includes _the Administrators group_.  That is, the user account only has access to the elevated process's path _through membership in the Administrators group_.
+This is the crux of things because, critically, looking up these paths manually in WinObj and examining their Access Control Lists?  I discovered that the ACL for the path that the _non-elevated process_ gets back from `NtOpenDirectoryObject` includes the user account (meaning the user account has explicit access to that path).  But the ACL for the path the _elevated_ process gets back _doesn't_ include the user account.  That ACL only includes _the Administrators group_.  That is, the user account only has access to the path that the elevated process gets from that `NtOpenDirectoryObject` call _through membership in the Administrators group_—the exact thing we denied when we created the token.
 
 | Token                 | \\?? Path | Path Accessed Via    | Can Access? |
 | --------------------- | --------- | -------------------- | ----------- |
@@ -211,7 +215,7 @@ This is the crux of things because, critically, looking up these paths manually 
 | Elevated              | [path B]  | Administrators Group | Yes         |
 | Elevated (restricted) | [path B]  | Administrators Group | _**NO**_    |
 
-This is it.  This is the root.  With this, we have all the pieces we need to know the bug's True Name[^11].
+This is it.  This is the kernel.  With this, we have all the pieces we need to know the bug's True Name[^11].
 
 [^11]:
     The True Name of a bug is what it is, how it happens—the elements involved and how they interact to create the bug.  To know a bug's True Name is to understand its exact nature.  Knowing a bug's True Name grants one tremendous power over it, typically (but not always) including the power to destroy it.
@@ -219,13 +223,13 @@ This is it.  This is the root.  With this, we have all the pieces we need to kno
 ### The True Name
 When the Run-As User for a service is an Administrator, Windows launches that service process elevated.  Always.
 
-The Tableau Server Zookeeper service, running elevated, tries to launch the protocol server with a non-elevated security token.  Windows doesn't really provide a way to do this, though.  So the protocol server actually runs with an elevated security token that, among other restrictions, does not have access to the Administrators group.
+The Tableau Server Zookeeper service, running elevated, tries to launch the protocol server with a non-elevated security token.  But Windows doesn't really provide a way to do this.  So the protocol server actually runs with an elevated security token that, among other restrictions, does not have access to the Administrators group.
 
-The protocol server spins up the WDC protocol.  QtWebEngine spins up a renderer child process to run the WDC's JavaScript/HTML.  The renderer child process, trying to render the HTML, requests fonts from the parent process.
+Later on, during extract refresh, the protocol server spins up the WDC protocol.  QtWebEngine spins up a renderer child process to run the WDC's JavaScript/HTML.  The renderer child process needs to access fonts to render the HTML.  If sandboxing is disabled, it accesses them from the file system directly and everything is fine.  If sandboxing is enabled, it instead requests the fonts from the parent process: the protocol server.
 
-The parent process opens each font file, then tries to confirm the file opened and the file requested are the same.  When that verification code tries to confirm the device name of the root drive, the device lookup gives it an object specific to the elevated user account.  That object's Access Control List only allows that user account access via the Administrators group.  The Administrators group has been denied to the process's security token, so access is denied.  This causes the root drive device lookup to fail, which causes the same-object verification to fail.
+The protocol server process opens the requested font file, then tries to confirm that the file opened and the file requested are the same.  When that verification code tries to confirm the device name of the root drive, the device lookup gives it an object path specific to the user account running as elevated.  That object path's Access Control List only allows that user account access via the Administrators group.  The Administrators group has been denied to the process's security token, so access is denied.  This causes the root drive device lookup to fail, which causes the same-object verification to fail.
 
-The protocol server reports to the renderer child process that it could not open the requested font file.  The renderer child process runs out of fonts to try to open, and crashes.  The protocol server registers this crash and aborts the extract.
+The protocol server reports to the renderer child process that it could not open the requested font file.  This repeats until the renderer child process runs out of fonts to try to open, and crashes.  The protocol server registers this crash and aborts the extract.
 
 {{< svg_embed src=./sequence-2.svg >}}
 Simple diagram showing the sequence described above.
@@ -241,18 +245,18 @@ There really wasn't one.  At least, not one in code.
 
 Ultimately, it was kind of a fluke that it had worked before.  The reason we hadn't been hitting the bug previously is because WebDataConnectors had previously been implemented with QtWebKit instead of QtWebEngine.  And WebKit just didn't happen to call `QueryDosDeviceW` on `C:`, so this never came up.
 
-As far as resolving via a code change, we really didn't have a lot of options.  If the Run-As User for a service is an Admin, Windows _will_ run that service elevated.  And there really just _isn't_ a way for an elevated process to get a non-elevated token.  You can try cloning one off of a non-elevated process, but there's no clean way to _find_ a non-elevated process to use for that, or ensure one is running.  You can't do it via a service, that's just begging the question.  And you can't assume the Run-As User is actually logged into the machine and running explorer.exe or anything.
+As far as resolving via a code change, we really didn't have a lot of options.  If the Run-As User for a service is an Admin, Windows _will_ run that service elevated.  And there really just _isn't_ a way for an elevated process to get a non-elevated token.  You can try cloning one off of a non-elevated process, but there's no clean way to _find_ a non-elevated process to use for that, or ensure one is running.  You can't do it via a service, that's just begging the question.  And you can't assume the Run-As User is actually logged into the machine and running explorer.exe or anything, because it's entirely likely that that user was created specifically to run Tableau Server, and isn't used for anything else.
 
 In the end, this really just ended up acting as a forcing function for us updating our guidance to recommend _against_ using an Administrator account as the Run-As User.  This was something we had apparently been moving toward for some time anyway; it's not a great security practice, and so far as I could determine was really only something we ever suggested because it was a quick shortcut to giving the Run-As User the various permissions it needed.  But over the years, we'd refined and adjusted enough other things that it really wasn't necessary, and it remaining part of the guidance was basically an artifact.
 
 ### Conclusions
-I feel like this one went pretty well as a first run of the whole Bug Detective concept.  It had a lot of the hits: obscure Windows guts, SysInternals tools, disassembling OS code to rip answers out of it…  Not to mention, the first appearance of Breakpoint Exceptions!  And between the security token stuff, the Windows Object Manager stuff, and the Tableau Server stuff, it had plenty of the "I'm only as much of an expert in this as I've needed to become over the last two or three days' worth of digging" that tended to be a hallmark of so many of these investigations.
+I feel like this one went pretty well as a first run of the whole Bug Detective concept.  It had a lot of the hits: obscure Windows guts, SysInternals tools, disassembling OS code to rip answers out of it…  Not to mention, the first appearance of Breakpoint Exceptions!  And between the security token stuff, the Windows Object Manager stuff, and the Tableau Server stuff, it had plenty of the "I didn't know anything about this three days ago and now people think I'm an expert" that tended to be a hallmark of so many of these investigations.
 
-Turnaround time wasn't too bad considering the depth of the problem.  Subtracting a couple weeks for a birthday trip and wrapping up some other unrelated work, it was maybe three or four weeks of investigation from the beginning of the fire drill until the cause was understood and we were talking about resolutions, and another two or three weeks from there until we were turning out the lights on it.
+Turnaround time wasn't too bad considering the depth of the problem (and the wait times involved in server stuff).  Subtracting a couple weeks for a birthday trip and wrapping up some other unrelated work, it was maybe three or four weeks of investigation from the beginning of the fire drill until the cause was understood and we were talking about resolutions, and another two or three weeks from there until we were turning out the lights on it.
 
-Difficulty-wise: not the most impossible solve, to be honest.  Tough, but doable.  I'm sure plenty of subject matter experts would have known that that deny-the-Admin-group trick wouldn't work and would cause weird access errors, but that's definitely a flavor of "hindsight is 20/20".
+Difficulty-wise: not the most impossible solve, to be honest.  Tough, but doable.  I'm sure plenty of subject matter experts would have known that that deny-the-Admin-group trick wouldn't work and would cause weird access errors, but that's definitely a flavor of "hindsight is 20/20".  Pretty sure that particular code dated back _a ways_.
 
-And not especially weird.  Technical and esoteric, sure; it's a good candidate for Doc-Brown technobabbling at someone.  But it doesn't have a real "Wait, _what?_" moment in it like I always love to get.
+And not _especially_ weird.  Technical and esoteric, sure; it's a good candidate for Doc-Brown technobabbling at someone.  But it doesn't have a real "Wait, _what?_" moment in it like I always love to get.
 
 So overall, I think I'll give it a 7 out of 10.  Good first adventure[^12].
 

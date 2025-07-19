@@ -7,3 +7,9 @@ td, th {
     border: 1px solid black;
     padding: 4px 8px;
 }
+
+code {
+    font-size: 0.82em;
+    color: green;
+    font-weight: bold;
+}
